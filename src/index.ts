@@ -45,7 +45,7 @@ class Server {
             })
             .catch((e) => console.log("error db:", e));
 
-        this.app.set('port', process.env.PORT || 3000);
+        this.app.set('port', process.env.PORT || 3001);
         //middlewares
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }))

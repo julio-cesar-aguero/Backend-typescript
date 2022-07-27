@@ -38,11 +38,11 @@ class Productos{
 }
 
 export class Venta{
-    @prop({type: () => [Detalles], _id: false})
-    detalles: Detalles[];
+    @prop({type: () => Detalles, _id: false})
+    detalles!: Detalles;
 
-    @prop({type: () => Productos, _id: false})
-    productos: Productos[];
+    @prop({type: () => [Productos], _id: false})
+    productos!: Productos[];
 }
 
 

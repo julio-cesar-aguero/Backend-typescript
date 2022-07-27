@@ -62,11 +62,11 @@ __decorate([
 class Venta {
 }
 __decorate([
-    (0, typegoose_1.prop)({ type: () => [Detalles], _id: false }),
-    __metadata("design:type", Array)
+    (0, typegoose_1.prop)({ type: () => Detalles, _id: false }),
+    __metadata("design:type", Detalles)
 ], Venta.prototype, "detalles", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ type: () => Productos, _id: false }),
+    (0, typegoose_1.prop)({ type: () => [Productos], _id: false }),
     __metadata("design:type", Array)
 ], Venta.prototype, "productos", void 0);
 exports.Venta = Venta;
