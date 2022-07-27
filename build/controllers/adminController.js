@@ -15,15 +15,47 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.adminController = void 0;
 const Producto_1 = __importDefault(require("../models/Producto"));
 const formidable_1 = __importDefault(require("formidable"));
+const Joi = require("@hapi/joi");
 const fs_1 = __importDefault(require("fs"));
+const Venta_1 = __importDefault(require("../models/Venta"));
 const path_1 = __importDefault(require("path"));
 const { v4: uuidv4 } = require('uuid');
+const schemaProducto = Joi.object({
+    name: Joi.string().min(6).max(255).required(),
+    description: Joi.string().min(6).max(1024).required(),
+    precio: Joi.number(),
+    preciodeventa: Joi.number(),
+    imgProducto: Joi.allow,
+});
 class adminController {
     orderVentas(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            res.status(200).json({
-                message: 'order Ventas'
+            Venta_1.default.aggregate([
+                // Unwind to "de-normalize"
+                { "$unwind": "$productos" },
+                // Group as expected
+                {
+                    "$group": {
+                        "_id": "$productos.id",
+                        "total": { "$sum": "$productos.cantidad" },
+                    }
+                }
+            ], function (err, result) {
+                // process results here
+                return res.json(result);
             });
+            const producto = yield Venta_1.default.findOne({ total: '4' });
+            console.log(producto);
+            /*
+            try {
+              const ventas = await Venta.find({}).lean();
+              return res.json(ventas)
+          
+            } catch (error) {
+              res.status(500).json({
+                error: error.message
+              })
+            }*/
         });
     }
     leerProductos(req, res) {
@@ -45,6 +77,10 @@ class adminController {
             form.parse(req, (err, fields, files) => __awaiter(this, void 0, void 0, function* () {
                 if (!files.imgProducto.length) {
                     try {
+                        //validar campos
+                        const { error } = schemaProducto.validate(fields);
+                        if (error)
+                            return res.status(400).json({ error: error.details[0].message });
                         //Buscar Producto
                         const buscarProducto = yield Producto_1.default.findOne({ name: fields.name });
                         if (buscarProducto) {
@@ -85,7 +121,7 @@ class adminController {
                         // guardado de referencia de imagen en BD
                         const producto = new Producto_1.default({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fields.name}${fileFolder}.${extension}`, utilidad: fields.preciodeventa - fields.precio });
                         yield producto.save();
-                        const productoRes = yield Producto_1.default.find();
+                        const productoRes = yield Producto_1.default.find(producto);
                         res.status(200).json({ error: null, message: 'Producto agregado', data: productoRes });
                     }
                     catch (error) {
@@ -96,6 +132,9 @@ class adminController {
                 }
                 else { // muttiples imagenes
                     try {
+                        const { error } = schemaProducto.validate(fields);
+                        if (error)
+                            return res.status(400).json({ error: error.details[0].message });
                         //Buscar Producto
                         const buscarProducto = yield Producto_1.default.findOne({ name: fields.name });
                         if (buscarProducto) {
@@ -146,7 +185,7 @@ class adminController {
                         // guardado de referencia de imagen en BD
                         const producto = new Producto_1.default({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fields.name + fileFolder, imgProducto: imagesOfProduct, utilidad: fields.preciodeventa - fields.precio });
                         yield producto.save();
-                        const productoRes = yield Producto_1.default.find();
+                        const productoRes = yield Producto_1.default.find(producto);
                         res.json({ error: null, message: 'Producto agregado', data: productoRes, imagenes: imagesOfProduct });
                     }
                     catch (error) {

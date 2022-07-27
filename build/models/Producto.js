@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Producto = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 class img {
 }
@@ -19,7 +20,7 @@ __decorate([
 class Producto {
 }
 __decorate([
-    (0, typegoose_1.prop)({ type: String, required: true, trim: true, unique: true }),
+    (0, typegoose_1.prop)({ type: String, required: true, trim: true }),
     __metadata("design:type", String)
 ], Producto.prototype, "name", void 0);
 __decorate([
@@ -46,5 +47,6 @@ __decorate([
     (0, typegoose_1.prop)({ type: Number }),
     __metadata("design:type", Number)
 ], Producto.prototype, "utilidad", void 0);
+exports.Producto = Producto;
 const ProductoModel = (0, typegoose_1.getModelForClass)(Producto);
 exports.default = ProductoModel;

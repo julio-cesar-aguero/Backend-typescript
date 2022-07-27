@@ -9,13 +9,50 @@ const { v4: uuidv4 } = require('uuid');
 
 
 
+const schemaProducto = Joi.object({
+    name: Joi.string().min(6).max(255).required(),
+    description: Joi.string().min(6).max(1024).required(),
+    precio: Joi.number(),
+    preciodeventa: Joi.number(),
+    imgProducto: Joi.allow,
+  });
 export class adminController {
 
 
     async orderVentas(req: Request, res: Response) {
-        res.status(200).json({
-            message: 'order Ventas'
-        })
+
+        Venta.aggregate([
+
+            // Unwind to "de-normalize"
+            { "$unwind": "$productos" },
+            // Group as expected
+            {
+                "$group": {
+                    "_id": "$productos.id",
+
+                    "total": { "$sum": "$productos.cantidad" },
+                }
+            }
+
+        ], function (err, result) {
+
+
+            // process results here
+            return res.json(result)
+
+        });
+        const producto = await Venta.findOne({ total: '4' })
+        console.log(producto)
+        /*
+        try {
+          const ventas = await Venta.find({}).lean();
+          return res.json(ventas)
+      
+        } catch (error) {
+          res.status(500).json({
+            error: error.message
+          })
+        }*/
     }
     async leerProductos(req: Request, res: Response) {
 
@@ -31,12 +68,19 @@ export class adminController {
 
     }
     async agregarProducto(req: Request, res: Response) {
-
+        
         const form = formidable({ multiples: true });
         form.parse(req, async (err, fields, files) => {
             if (!(<any>files.imgProducto).length) {
 
                 try {
+
+                    //validar campos
+
+                    const { error } = schemaProducto.validate(fields)
+                    
+                    if (error) return res.status(400).json({ error: error.details[0].message });
+                    
                     //Buscar Producto
 
                     const buscarProducto = await Producto.findOne({ name: fields.name })
@@ -88,7 +132,7 @@ export class adminController {
 
                     const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fields.name}${fileFolder}.${extension}`, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
                     await producto.save();
-                    const productoRes = await Producto.find();
+                    const productoRes = await Producto.find(<any>producto);
                     res.status(200).json({ error: null, message: 'Producto agregado', data: productoRes })
 
 
@@ -102,6 +146,11 @@ export class adminController {
 
             } else { // muttiples imagenes
                 try {
+
+                    const { error } = schemaProducto.validate(fields)
+                    
+                    if (error) return res.status(400).json({ error: error.details[0].message });
+                    
                     //Buscar Producto
 
                     const buscarProducto = await Producto.findOne({ name: fields.name })
@@ -161,7 +210,7 @@ export class adminController {
 
                     const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fields.name + fileFolder, imgProducto: imagesOfProduct, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
                     await producto.save();
-                    const productoRes = await Producto.find();
+                    const productoRes = await Producto.find(<any>producto);
                     res.json({ error: null, message: 'Producto agregado', data: productoRes, imagenes: imagesOfProduct })
 
                 } catch (error) {

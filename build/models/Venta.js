@@ -11,26 +11,62 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Venta = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
-class detalles {
+class Detalles {
 }
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, typegoose_1.prop)({ type: () => Number }),
     __metadata("design:type", Number)
-], detalles.prototype, "Total", void 0);
-class productos {
+], Detalles.prototype, "Total", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => Number }),
+    __metadata("design:type", Number)
+], Detalles.prototype, "articulosTotal", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => Number }),
+    __metadata("design:type", Number)
+], Detalles.prototype, "cambio", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => Number }),
+    __metadata("design:type", Number)
+], Detalles.prototype, "importe", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => String }),
+    __metadata("design:type", String)
+], Detalles.prototype, "username", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => Date, default: Date.now }),
+    __metadata("design:type", String)
+], Detalles.prototype, "fechaVenta", void 0);
+class Productos {
 }
 __decorate([
-    (0, typegoose_1.prop)(),
+    (0, typegoose_1.prop)({ type: () => String }),
     __metadata("design:type", String)
-], productos.prototype, "name", void 0);
+], Productos.prototype, "name", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => String }),
+    __metadata("design:type", String)
+], Productos.prototype, "precio", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => String }),
+    __metadata("design:type", String)
+], Productos.prototype, "preciodeventa", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => Number }),
+    __metadata("design:type", Number)
+], Productos.prototype, "cantidad", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ type: () => Number }),
+    __metadata("design:type", Number)
+], Productos.prototype, "utilidad", void 0);
 class Venta {
 }
 __decorate([
-    (0, typegoose_1.prop)({ type: () => [detalles] }),
+    (0, typegoose_1.prop)({ type: () => [Detalles], _id: false }),
     __metadata("design:type", Array)
 ], Venta.prototype, "detalles", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ type: () => { productos; } }),
+    (0, typegoose_1.prop)({ type: () => Productos, _id: false }),
     __metadata("design:type", Array)
 ], Venta.prototype, "productos", void 0);
 exports.Venta = Venta;

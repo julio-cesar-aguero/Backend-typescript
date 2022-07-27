@@ -43,7 +43,7 @@ export class authController {
       {
         name: user.name,
         id: user._id,
-        roles: user.roles
+        roles: (<any>user).roles[0].name
       }, process.env.TOKEN_SECRET
     );
 
@@ -53,7 +53,7 @@ export class authController {
       error: null,
       data: { token },
       name: user.name,
-      roles: user.roles[0].name,
+      roles: (<any>user).roles[0].name,
       msg: 'Bienvenido',
     });
 

@@ -5,9 +5,9 @@ class img {
     @prop({ type: () => String })
     name!: string
 }
-class Producto {
+export class Producto {
 
-    @prop({ type: String, required: true, trim: true, unique: true })
+    @prop({ type: String, required: true, trim: true})
     name: string
 
     @prop({ type: String, required: true })

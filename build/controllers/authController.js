@@ -49,7 +49,7 @@ class authController {
             const token = jsonwebtoken_1.default.sign({
                 name: user.name,
                 id: user._id,
-                roles: user.roles
+                roles: user.roles[0].name
             }, process.env.TOKEN_SECRET);
             // RESPUESTA
             res.header("auth-token", token).json({
