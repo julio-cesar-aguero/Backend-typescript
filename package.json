@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "ts": "tsc -w",
-    "dev": "nodemon ./build/index.js",
-    "start": "tsc && node ./build/server.js",
+    "dev": "nodemon ./dist/index.js",
+    "start": "tsc && node ./dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

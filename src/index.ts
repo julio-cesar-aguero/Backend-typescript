@@ -10,6 +10,7 @@ import adminRoutes from './routes/admin';
 import userRoutes from './routes/user';
 import bodyparser from 'body-parser';
 import cors from 'cors';
+import path from 'path';
 require("dotenv").config();
 
 const corsOptions = {
@@ -30,9 +31,10 @@ class Server {
 
         // cors
         this.app.use(cors(corsOptions));
-        this.app.set('view engine','ejs')
-        this.app.set('views', __dirname + '/views')
-        this.app.use(express.static(__dirname + "/public"));
+        //this.app.set('view engine','ejs')
+        this.app.use('/images',express.static(__dirname + '/images'));
+        //this.app.set('views', __dirname + '/views')
+        
         // conexion a mongodb 
         const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.irtcf.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
 

@@ -27,9 +27,9 @@ class Server {
     config() {
         // cors
         this.app.use((0, cors_1.default)(corsOptions));
-        this.app.set('view engine', 'ejs');
-        this.app.set('views', __dirname + '/views');
-        this.app.use(express_1.default.static(__dirname + "/public"));
+        //this.app.set('view engine','ejs')
+        this.app.use('/images', express_1.default.static(__dirname + '/images'));
+        //this.app.set('views', __dirname + '/views')
         // conexion a mongodb 
         const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.irtcf.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
         mongoose_1.default.connect(uri, {})

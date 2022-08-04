@@ -15,7 +15,7 @@ const schemaProducto = Joi.object({
     precio: Joi.number(),
     preciodeventa: Joi.number(),
     imgProducto: Joi.allow,
-  });
+});
 export class adminController {
 
 
@@ -68,7 +68,7 @@ export class adminController {
 
     }
     async agregarProducto(req: Request, res: Response) {
-        
+
         const form = formidable({ multiples: true });
         form.parse(req, async (err, fields, files) => {
             if (!(<any>files.imgProducto).length) {
@@ -78,9 +78,9 @@ export class adminController {
                     //validar campos
 
                     const { error } = schemaProducto.validate(fields)
-                    
+
                     if (error) return res.status(400).json({ error: error.details[0].message });
-                    
+
                     //Buscar Producto
 
                     const buscarProducto = await Producto.findOne({ name: fields.name })
@@ -111,7 +111,7 @@ export class adminController {
 
                     let fileFolder = uuidv4();
                     fileFolder = fileFolder.substr(-7);
-                    const dirFolder = path.join(__dirname, '../public/img/productos/' + fields.name + fileFolder);
+                    const dirFolder = path.join(__dirname, '../images/productos/' + fields.name + fileFolder);
                     const imagesOfProduct = [];
                     fs.mkdir(dirFolder, (err) => {
                         if (err) {
@@ -124,13 +124,13 @@ export class adminController {
 
                     let fileName = uuidv4();
                     fileName = fileName.substr(-7);
-                    const dirFile = path.join(__dirname, `../public/img/productos/${fields.name}${fileFolder}/${fileName}${fileFolder}.${extension}`);
+                    const dirFile = path.join(__dirname, `../images/productos/${fields.name}${fileFolder}/${fileName}${fileFolder}.${extension}`);
                     fs.renameSync((<any>file).filepath, dirFile)
 
                     // guardado de referencia de imagen en BD
 
 
-                    const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fields.name}${fileFolder}.${extension}`, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
+                    const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fileName}${fileFolder}.${extension}`, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
                     await producto.save();
                     const productoRes = await Producto.find(<any>producto);
                     res.status(200).json({ error: null, message: 'Producto agregado', data: productoRes })
@@ -148,9 +148,9 @@ export class adminController {
                 try {
 
                     const { error } = schemaProducto.validate(fields)
-                    
+
                     if (error) return res.status(400).json({ error: error.details[0].message });
-                    
+
                     //Buscar Producto
 
                     const buscarProducto = await Producto.findOne({ name: fields.name })
@@ -164,7 +164,7 @@ export class adminController {
 
                     let fileFolder = uuidv4();
                     fileFolder = fileFolder.substr(-7);
-                    const dirFolder = path.join(__dirname, '../public/img/productos/' + fields.name + fileFolder);
+                    const dirFolder = path.join(__dirname, '../images/productos/' + fields.name + fileFolder);
                     const imagesOfProduct = [];
                     fs.mkdir(dirFolder, (err) => {
                         if (err) {
@@ -197,7 +197,7 @@ export class adminController {
 
                         let fileName = uuidv4();
                         fileName = fileName.substr(-3);
-                        const dirFile = path.join(__dirname, `../public/img/productos/${fields.name}${fileFolder}/${fileName}${fields.name}${i}${fileFolder}.${extension}`);
+                        const dirFile = path.join(__dirname, `../images/productos/${fields.name}${fileFolder}/${fileName}${fields.name}${i}${fileFolder}.${extension}`);
                         imagesOfProduct.push(fileName + fields.name + i + fileFolder + '.' + extension)
                         try {
                             fs.renameSync((<any>file).filepath, dirFile)
@@ -247,8 +247,8 @@ export class adminController {
                 if (err) throw err;
                 console.log("Actualizado", data)
                 res.json({ error: null, id, data })
-              })
-            
+            })
+
         } catch (error) {
             return res.json({ msg: error })
         }
