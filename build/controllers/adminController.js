@@ -220,8 +220,12 @@ class adminController {
             try {
                 Producto_1.default.updateOne({
                     _id: id
+                }, data, (err, updatedProducto) => {
+                    if (err)
+                        throw err;
+                    console.log("Actualizado", data);
+                    res.json({ error: null, id, data });
                 });
-                res.status(200).json({ error: null, id, data });
             }
             catch (error) {
                 return res.json({ msg: error });

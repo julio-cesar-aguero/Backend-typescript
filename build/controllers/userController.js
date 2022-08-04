@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = void 0;
 const Venta_1 = __importDefault(require("../models/Venta"));
 const path = require('path');
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const html = '../templates/nueva-venta.html';
 class userController {
     leerVentas(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,7 +39,48 @@ class userController {
                 const venta = new Venta_1.default({ detalles: detalles, productos: productos });
                 yield venta.save();
                 const ventaRes = yield Venta_1.default.find(venta);
-                return res.json({ msg: 'Ventas', data: ventaRes });
+                const emailVentas = 'becarioweb@rodaccesorios.com';
+                const dirFolder = path.join('../src/views/email.ejs');
+                //mandar e-mail
+                const transporter = nodemailer_1.default.createTransport({
+                    host: "smtp.mailtrap.io",
+                    port: 2525,
+                    auth: {
+                        user: "92b08c96ee6f55",
+                        pass: "739a05dac15e90"
+                    },
+                    logger: true
+                });
+                const ejs = require("ejs");
+                console.log("michi", dirFolder);
+                ejs.renderFile("/home/julio/Escritorio/practica-final/Backend-typescript/src/views/email.ejs", { titulo: 'titulo dinamico' }, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        var mainOptions = {
+                            from: '"Sender Name" <from@example.net>',
+                            to: emailVentas,
+                            subject: "Hello from node",
+                            text: "Nueva Venta",
+                            html: data
+                        };
+                        transporter.sendMail(mainOptions, function (err, info) {
+                            if (err) {
+                                res.json({
+                                    msg: 'fail'
+                                });
+                            }
+                            else {
+                                res.json({
+                                    msg: 'success'
+                                });
+                            }
+                        });
+                    }
+                });
+                console.log("Message sent: %s", html);
+                return res.json({ msg: 'Ventas', data: ventaRes, details: emailVentas });
             }
             catch (error) {
                 console.log(error);

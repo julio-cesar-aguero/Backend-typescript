@@ -243,10 +243,12 @@ export class adminController {
         try {
             Producto.updateOne({
                 _id: id
-            })
-            res.status(200).json(
-                { error: null, id, data }
-            )
+            }, (<any>data), (err: any, updatedProducto: any) => {
+                if (err) throw err;
+                console.log("Actualizado", data)
+                res.json({ error: null, id, data })
+              })
+            
         } catch (error) {
             return res.json({ msg: error })
         }

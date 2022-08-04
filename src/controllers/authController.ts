@@ -17,9 +17,7 @@ const schemaRegister = Joi.object({
   password: Joi.string().min(6).max(255).required(),
   roles: Joi.array(),
 });
-
 export class authController {
-
 
   async loginUser(req: Request, res: Response) {
     // Validaciones

@@ -12,6 +12,7 @@ class user {
     }
     routes() {
         this.router.post("/nueva-venta", controller.nuevaVenta);
+        this.router.get("/", controller.leerVentas);
     }
 }
 const userRoutes = new user();

@@ -30,6 +30,8 @@ class Server {
 
         // cors
         this.app.use(cors(corsOptions));
+        this.app.set('view engine','ejs')
+        this.app.set('views', __dirname + '/views')
         this.app.use(express.static(__dirname + "/public"));
         // conexion a mongodb 
         const uri = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@cluster0.irtcf.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
@@ -45,7 +47,7 @@ class Server {
             })
             .catch((e) => console.log("error db:", e));
 
-        this.app.set('port', process.env.PORT || 3001);
+        this.app.set('port', process.env.PORT || 3000);
         //middlewares
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }))
