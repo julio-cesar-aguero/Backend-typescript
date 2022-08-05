@@ -99,7 +99,7 @@ export class adminController {
                     if (((<any>file).originalFilename) === '') {
                         throw new Error('ingresa una imagen')
                     }
-                    if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg') {
+                    if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg' && extension !== 'webp') {
                         console.log((<any>file).mimetype, "extension", extension)
                         throw new Error('solo imagenes ( jpeg, jpg / png )')
                     }
@@ -111,7 +111,7 @@ export class adminController {
 
                     let fileFolder = uuidv4();
                     fileFolder = fileFolder.substr(-7);
-                    const dirFolder = path.join(__dirname, '../images/productos/' + fields.name + fileFolder);
+                    const dirFolder = path.join(__dirname, '../images/productos/'+ fileFolder);
                     const imagesOfProduct = [];
                     fs.mkdir(dirFolder, (err) => {
                         if (err) {
@@ -124,13 +124,13 @@ export class adminController {
 
                     let fileName = uuidv4();
                     fileName = fileName.substr(-7);
-                    const dirFile = path.join(__dirname, `../images/productos/${fields.name}${fileFolder}/${fileName}${fileFolder}.${extension}`);
+                    const dirFile = path.join(__dirname, `../images/productos/${fileFolder}/${fileName}.${extension}`);
                     fs.renameSync((<any>file).filepath, dirFile)
 
                     // guardado de referencia de imagen en BD
 
 
-                    const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fileName}${fileFolder}.${extension}`, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
+                    const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fileName}.${extension}`, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
                     await producto.save();
                     const productoRes = await Producto.find(<any>producto);
                     res.status(200).json({ error: null, message: 'Producto agregado', data: productoRes })
@@ -164,7 +164,7 @@ export class adminController {
 
                     let fileFolder = uuidv4();
                     fileFolder = fileFolder.substr(-7);
-                    const dirFolder = path.join(__dirname, '../images/productos/' + fields.name + fileFolder);
+                    const dirFolder = path.join(__dirname, '../images/productos/' + fileFolder);
                     const imagesOfProduct = [];
                     fs.mkdir(dirFolder, (err) => {
                         if (err) {
@@ -185,7 +185,7 @@ export class adminController {
                         if (((<any>file).originalFilename) === '') {
                             throw new Error('ingresa una imagen')
                         }
-                        if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg') {
+                        if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg' && extension !== 'webp') {
                             console.log((<any>file).mimetype, "extension", extension)
                             throw new Error('solo imagenes ( jpeg, jpg / png )')
                         }
@@ -197,25 +197,26 @@ export class adminController {
 
                         let fileName = uuidv4();
                         fileName = fileName.substr(-3);
-                        const dirFile = path.join(__dirname, `../images/productos/${fields.name}${fileFolder}/${fileName}${fields.name}${i}${fileFolder}.${extension}`);
-                        imagesOfProduct.push(fileName + fields.name + i + fileFolder + '.' + extension)
+                        const dirFile = path.join(__dirname, `../images/productos/${fileFolder}/${fileName}${i}${fileFolder}.${extension}`);
+                        imagesOfProduct.push(fileName + i +  '.' + extension)
                         try {
                             fs.renameSync((<any>file).filepath, dirFile)
                         } catch (error) {
+                            res.json({error: error})
                             fs.rmSync(dirFolder, { recursive: true });
                         }
                     }
 
                     // guardado de referencia de imagen en BD
 
-                    const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fields.name + fileFolder, imgProducto: imagesOfProduct, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
+                    const producto = new Producto({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile:  fileFolder, imgProducto: imagesOfProduct, utilidad: (<any>fields).preciodeventa - (<any>fields).precio })
                     await producto.save();
                     const productoRes = await Producto.find(<any>producto);
                     res.json({ error: null, message: 'Producto agregado', data: productoRes, imagenes: imagesOfProduct })
 
                 } catch (error) {
                     res.json({
-                        error: (<any>error).message
+                        error: (<any>error)
                     })
 
                 }

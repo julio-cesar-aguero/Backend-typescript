@@ -45,7 +45,7 @@ export class userController {
       })
       const ejs = require("ejs");
       console.log("michi", dirFolder)
-      ejs.renderFile("/home/julio/Escritorio/practica-final/Backend-typescript/src/views/email.ejs",{titulo:'titulo dinamico'}, function (err: any, data: any) {
+      ejs.renderFile("/home/julio/Escritorio/practica-final/Backend-typescript/src/views/email.ejs",{detalles: detalles}, function (err: any, data: any) {
         if (err) {
           console.log(err);
         } else {

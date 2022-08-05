@@ -95,7 +95,7 @@ class adminController {
                         if ((file.originalFilename) === '') {
                             throw new Error('ingresa una imagen');
                         }
-                        if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg') {
+                        if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg' && extension !== 'webp') {
                             console.log(file.mimetype, "extension", extension);
                             throw new Error('solo imagenes ( jpeg, jpg / png )');
                         }
@@ -105,7 +105,7 @@ class adminController {
                         //creacion de espacio para imagenes
                         let fileFolder = uuidv4();
                         fileFolder = fileFolder.substr(-7);
-                        const dirFolder = path_1.default.join(__dirname, '../images/productos/' + fields.name + fileFolder);
+                        const dirFolder = path_1.default.join(__dirname, '../images/productos/' + fileFolder);
                         const imagesOfProduct = [];
                         fs_1.default.mkdir(dirFolder, (err) => {
                             if (err) {
@@ -116,10 +116,10 @@ class adminController {
                         // guardado de imagen en servidor
                         let fileName = uuidv4();
                         fileName = fileName.substr(-7);
-                        const dirFile = path_1.default.join(__dirname, `../images/productos/${fields.name}${fileFolder}/${fileName}${fileFolder}.${extension}`);
+                        const dirFile = path_1.default.join(__dirname, `../images/productos/${fileFolder}/${fileName}.${extension}`);
                         fs_1.default.renameSync(file.filepath, dirFile);
                         // guardado de referencia de imagen en BD
-                        const producto = new Producto_1.default({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fileName}${fileFolder}.${extension}`, utilidad: fields.preciodeventa - fields.precio });
+                        const producto = new Producto_1.default({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: `${fileName}.${extension}`, utilidad: fields.preciodeventa - fields.precio });
                         yield producto.save();
                         const productoRes = yield Producto_1.default.find(producto);
                         res.status(200).json({ error: null, message: 'Producto agregado', data: productoRes });
@@ -146,7 +146,7 @@ class adminController {
                         //creacion de espacio para imagenes
                         let fileFolder = uuidv4();
                         fileFolder = fileFolder.substr(-7);
-                        const dirFolder = path_1.default.join(__dirname, '../images/productos/' + fields.name + fileFolder);
+                        const dirFolder = path_1.default.join(__dirname, '../images/productos/' + fileFolder);
                         const imagesOfProduct = [];
                         fs_1.default.mkdir(dirFolder, (err) => {
                             if (err) {
@@ -163,7 +163,7 @@ class adminController {
                             if ((file.originalFilename) === '') {
                                 throw new Error('ingresa una imagen');
                             }
-                            if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg') {
+                            if (extension !== 'png' && extension !== 'jpeg' && extension !== 'jpg' && extension !== 'webp') {
                                 console.log(file.mimetype, "extension", extension);
                                 throw new Error('solo imagenes ( jpeg, jpg / png )');
                             }
@@ -173,24 +173,25 @@ class adminController {
                             // guardado de imagen en servidor
                             let fileName = uuidv4();
                             fileName = fileName.substr(-3);
-                            const dirFile = path_1.default.join(__dirname, `../images/productos/${fields.name}${fileFolder}/${fileName}${fields.name}${i}${fileFolder}.${extension}`);
-                            imagesOfProduct.push(fileName + fields.name + i + fileFolder + '.' + extension);
+                            const dirFile = path_1.default.join(__dirname, `../images/productos/${fileFolder}/${fileName}${i}${fileFolder}.${extension}`);
+                            imagesOfProduct.push(fileName + i + '.' + extension);
                             try {
                                 fs_1.default.renameSync(file.filepath, dirFile);
                             }
                             catch (error) {
+                                res.json({ error: error });
                                 fs_1.default.rmSync(dirFolder, { recursive: true });
                             }
                         }
                         // guardado de referencia de imagen en BD
-                        const producto = new Producto_1.default({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fields.name + fileFolder, imgProducto: imagesOfProduct, utilidad: fields.preciodeventa - fields.precio });
+                        const producto = new Producto_1.default({ name: fields.name, description: fields.description, precio: fields.precio, preciodeventa: fields.preciodeventa, folderfile: fileFolder, imgProducto: imagesOfProduct, utilidad: fields.preciodeventa - fields.precio });
                         yield producto.save();
                         const productoRes = yield Producto_1.default.find(producto);
                         res.json({ error: null, message: 'Producto agregado', data: productoRes, imagenes: imagesOfProduct });
                     }
                     catch (error) {
                         res.json({
-                            error: error.message
+                            error: error
                         });
                     }
                 }
